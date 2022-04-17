@@ -34,5 +34,8 @@ public class MyFilter1 implements Filter {
                 out.println("필터 인증 못거침");
             }
         }
+        else{
+            chain.doFilter(request, response);
+        }
     }
 }
