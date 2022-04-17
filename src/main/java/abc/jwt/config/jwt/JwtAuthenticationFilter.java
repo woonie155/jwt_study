@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws AuthenticationException {
         System.out.println("유저네임필터 동작");
 
-       //아이디, 패스워드 파싱
+       //아이디, 패스워드 파싱(제이슨)
         ObjectMapper om = new ObjectMapper();
         LoginRequestDto loginRequestDto = null;
         try {
@@ -79,14 +79,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = JWT.create()
                 .withSubject(pd_profile.getUsername()) //토큰의 이름
-                .withExpiresAt(new Date(System.currentTimeMillis()+ (1000*60*10))) //만료시간 10분
+                .withExpiresAt(new Date(System.currentTimeMillis()+ (JwtProperties.EXPIRATION_TIME))) //만료시간 10분
                 .withClaim("id", pd_profile.getUser().getId()) // 비공개 클레임 - 선택
                 .withClaim("username", pd_profile.getUser().getUsername()) // 비공개 클레임 - 선택
-                .sign(Algorithm.HMAC512("jeawoon")); //HMAC HS256에 쓰일 개인키
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); //HMAC HS256에 쓰일 개인키
 
-        response.addHeader("Authorization", "Bearer "+jwtToken); //헤더 담아 응답
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken); //헤더 담아 응답
     }
 
-    //추가적으로 + 요청마다 JWT토큰이 유효한지 판단할 필터 설계계 필요
+    //추가적으로 + 요청마다 JWT토큰이 유효- 권한을 판단할 필터 설계계 필요
+    // -> JwtAuthorizationFilter extends BasicAuthenticationFilter 로 권한 비교 구현.
 }
 

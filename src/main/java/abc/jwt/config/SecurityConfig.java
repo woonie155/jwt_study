@@ -2,6 +2,7 @@ package abc.jwt.config;
 
 
 import abc.jwt.config.jwt.JwtAuthenticationFilter;
+import abc.jwt.config.jwt.JwtAuthorizationFilter;
 import abc.jwt.filter.MyFilter1;
 import abc.jwt.filter.MyFilter3;
 import abc.jwt.repository.UserRepository;
@@ -45,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() // 해당 인증방식 사용x. -> 필수
 
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) //해당 로그인필터를 등록
-                //.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
